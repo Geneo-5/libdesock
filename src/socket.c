@@ -7,6 +7,7 @@
 
 VISIBLE
 int socket (int domain, int type, int protocol) {
+    domain = AF_INET;
     DEBUG_LOG("socket(%d, %d, %d)", domain, type, protocol);
 
     int s = __socketcall(socket, domain, type, protocol, 0, 0, 0);

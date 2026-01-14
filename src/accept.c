@@ -14,6 +14,10 @@ int accept4 (int fd, struct sockaddr* addr, socklen_t* len, int flag) {
     DEBUG_LOG("accept4(%d, %p, %p, %d)", fd, addr, len, flag);
 
     if (LIKELY(accept_block)) {
+        if (flag | SOCK_NONBLOCK) {
+              errno = EAGAIN;
+              return -1;
+      }
         sem_wait(&sem);
     }
     accept_block = 1;
