@@ -7,8 +7,15 @@
 
 VISIBLE
 int accept4 (int fd, struct sockaddr* addr, socklen_t* len, int flag) {
+    static int call = 0;
+
     if (UNLIKELY(!DESOCK_FD(fd))) {
         return socketcall_cp(accept4, fd, addr, len, flag, 0, 0);
+    }
+
+    if(call) {
+        errno = EINTR;
+        return -1;
     }
     
     DEBUG_LOG("accept4(%d, %p, %p, %d)", fd, addr, len, flag);
@@ -39,6 +46,7 @@ int accept4 (int fd, struct sockaddr* addr, socklen_t* len, int flag) {
     }
 
     DEBUG_LOG(" => %d", new_fd);
+    call++;
     return new_fd;
 }
 VERSION(accept4)
